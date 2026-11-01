@@ -1,0 +1,60 @@
+# CD (Phase 10): build ONCE, tag with the commit SHA, deploy staging automatically,
+# production only after a human approves. Steps marked TODO depend on ADR-0009 (hosting).
+name: cd
+
+on:
+  workflow_run:
+    workflows: [ci]
+    branches: [main]
+    types: [completed]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
+jobs:
+  build-and-push:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - id: meta
+        run: echo "tag=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_OUTPUT"
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push (SHA tag only, never :latest)
+        run: |
+          docker build -t "$IMAGE:${{ steps.meta.outputs.tag }}" .
+          docker push "$IMAGE:${{ steps.meta.outputs.tag }}"
+
+  deploy-staging:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Deploy image to staging
+        run: echo "TODO(ADR-0009): deploy $IMAGE:${{ needs.build-and-push.outputs.tag }} to staging"
+      - name: Smoke test
+        run: echo "TODO: hit /health and 2-3 real endpoints on the staging URL; fail the job if any fails"
+
+  deploy-production:
+    needs: [build-and-push, deploy-staging]
+    runs-on: ubuntu-latest
+    # Configure required reviewers on the 'production' environment in GitHub settings:
+    # that is what makes this job wait for manual approval.
+    environment: production
+    steps:
+      - name: Deploy the SAME image to production
+        run: echo "TODO(ADR-0009): deploy $IMAGE:${{ needs.build-and-push.outputs.tag }} to production"
+      - name: Smoke test
+        run: echo "TODO: same smoke test against production"

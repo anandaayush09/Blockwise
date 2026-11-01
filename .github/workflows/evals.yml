@@ -1,0 +1,38 @@
+# LLM-graded evals cost real money, so they do NOT run on every push.
+# Trigger manually or nightly, with a hard budget.
+name: evals
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "Suite to run"
+        required: true
+        default: regulation_qa
+      budget_inr:
+        description: "Hard budget cap (INR)"
+        required: true
+        default: "500"
+  # schedule:
+  #   - cron: "30 20 * * *"   # nightly; enable once suites are stable (cron is UTC)
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv python install 3.12
+      - run: uv sync --extra dev --extra rag --extra agents --extra evals
+      - name: Run suite
+        run: uv run python evals/run_evals.py --suite "${{ inputs.suite }}" --budget-inr "${{ inputs.budget_inr }}"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-results
+          path: evals/results/

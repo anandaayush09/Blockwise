@@ -1,0 +1,16 @@
+# Backtest protocol (ADR-0008). Decide, write the reasoning in the ADR, then fill.
+period:
+  start: null            # first test day (6-12 months, per the project brief)
+  end: null
+  train_end: null        # everything before this is training only; never tune on the test window
+as_of:
+  dam_decision_time_ist: null   # VERIFY from exchange rules: features must stop before this on D-1
+  rtm_decision_lead_blocks: null
+baselines:
+  naive_demand: "same_block_last_week"   # candidate; confirm in ADR-0008
+  naive_procurement: null                # e.g. "buy forecast gap at DAM, settle residual at DSM"
+oracle:
+  enabled: true          # perfect-foresight optimum = upper bound on possible savings
+report:
+  currency: "INR"
+  group_by: ["month", "season", "weekday_vs_weekend"]

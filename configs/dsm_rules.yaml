@@ -1,0 +1,31 @@
+# Deviation Settlement Mechanism as DATA ("rules-as-code").
+# Every value is null until YOU read the regulation and fill it in, with the clause.
+# The regulation agent only CITES clauses; penalty.py CALCULATES from this file.
+# (ADR-0003: how to encode, and how to keep it in sync with the regulation text.)
+#
+# Fill the regulation and amendment you are modelling, and record the effective date.
+regulation:
+  name: null            # e.g. the CERC DSM regulation you modelled, with amendment
+  effective_from: null  # date (rules changed over time - the backtest must use the rules in force on each day)
+  source_url: null
+  document_path: null   # file under data/regulations/
+
+# Deviation = actual - scheduled (positive = over-drawal). Check the sign convention in the text.
+reference_rate:
+  definition: null      # VERIFY: which price is the reference (e.g. exchange-linked) and how it is computed per block
+  clause_ref: null
+
+bands:                  # one entry per deviation band, as many as the regulation defines
+  - name: null
+    deviation_from_pct_of_schedule: null   # VERIFY unit: % of schedule vs. % of capacity vs. MW
+    deviation_to_pct_of_schedule: null
+    over_drawal_rate: null                 # formula or multiplier of the reference rate
+    under_drawal_rate: null
+    clause_ref: null
+
+caps_and_floors:
+  max_charge_inr_per_mwh: null
+  min_charge_inr_per_mwh: null
+  clause_ref: null
+
+additional_charges: []  # e.g. volume-based surcharges, if any in the text you model
