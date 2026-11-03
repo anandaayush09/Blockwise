@@ -20,3 +20,5 @@ data/snapshots/*
 evals/results/
 *.duckdb
 *.parquet
+# Graphify generated output
+graphify-out/*
