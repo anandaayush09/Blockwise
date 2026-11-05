@@ -8,6 +8,10 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+literature/
+docs/interview-prep.md
+
+
 
 # data is never committed; READMEs inside data/ are
 data/raw/*
@@ -22,3 +26,6 @@ evals/results/
 *.parquet
 # Graphify generated output
 graphify-out/*
+
+# literature: keep the README and notes, not third-party PDFs
+literature/*.pdf
