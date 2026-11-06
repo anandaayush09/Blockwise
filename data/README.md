@@ -4,9 +4,9 @@ Raw and processed data are gitignored. Only READMEs are committed. Fill the inve
 
 | Series | Granularity | Source (URL) | Licence / terms | Period available | Gaps or revisions | Local path |
 |---|---|---|---|---|---|---|
-| IEX DAM MCP | _TODO_ | | | | | data/raw/ |
-| IEX RTM price | _TODO_ | | | | | data/raw/ |
-| Demand (state/SLDC proxy) | _TODO_ | | | | | data/raw/ |
+| IEX DAM MCP | 15 minutes | | | | | data/raw/ |
+| IEX RTM price | 15 minutes | | | | | data/raw/ |
+| Demand (state/SLDC proxy) |  | | | | | data/raw/ |
 | Solar generation | _TODO_ | | | | | data/raw/ |
 | Wind generation | _TODO_ | | | | | data/raw/ |
 | Weather (forecast as issued, and observed) | _TODO_ | | | | | data/raw/ |
